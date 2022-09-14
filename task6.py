@@ -13,7 +13,7 @@ cust_dirs = {'изображения': ['JPEG', 'PNG', 'JPG', 'SVG'],
 
 # Creation customs DIRs in accordance with HOMETASK guide
 def create_custom_dirs(path):
-	for cd in cust_dirs.keys():
+	for cd in cust_dirs:
 		if not os.path.exists(os.path.join(base_path, cd)):
 			os.makedirs(os.path.join(base_path, cd))
 	
@@ -63,13 +63,13 @@ def recurce(path):
 			print ('recurcive level')
 			recurce(file_path)
 			# Condition for Deleting the empty folders
-			if len(os.listdir(file_path)) == 0:
+			if not os.listdir(file_path):
 				os.rmdir(file_path)
 
 # Function to unpack the archived files
 def unpacking(path):
 	arch_path = os.path.join(path, 'архивы')
-	if os.path.exists(arch_path) and len(os.listdir(arch_path)) != 0:
+	if os.path.exists(arch_path) and os.listdir(arch_path)::
 		for file in os.listdir(arch_path): 
 			if os.path.splitext(file)[1].lstrip('.') in cust_dirs['архивы'] or os.path.splitext(file)[1].lstrip('.').upper() in cust_dirs['архивы']:
 				new_path = os.path.join(arch_path, os.path.splitext(file)[0])
