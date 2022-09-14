@@ -1,7 +1,6 @@
 import os
 import shutil
 import sys
-base_path = 'C:\\Users\\nf908\\Pictures\\python_os'
 
 # Dict for Hometask
 cust_dirs = {'изображения': ['JPEG', 'PNG', 'JPG', 'SVG'],
@@ -14,8 +13,8 @@ cust_dirs = {'изображения': ['JPEG', 'PNG', 'JPG', 'SVG'],
 # Creation customs DIRs in accordance with HOMETASK guide
 def create_custom_dirs(path):
 	for cd in cust_dirs:
-		if not os.path.exists(os.path.join(base_path, cd)):
-			os.makedirs(os.path.join(base_path, cd))
+		if not os.path.exists(os.path.join(path, cd)):
+			os.makedirs(os.path.join(path, cd))
 	
 # Normalization of the file name
 def normalize(path, file):
@@ -42,7 +41,7 @@ def normalize(path, file):
 	return result
 
 # Function to replace the files and delete empty DIRs
-def recurce(path):
+def recurse(path):
 	files = os.listdir(path)
 	for file in files:
 		if os.path.isfile(os.path.join(path,file)):
@@ -51,17 +50,17 @@ def recurce(path):
 		if os.path.isfile(file_path):
 			for key, value in cust_dirs.items():
 				if os.path.splitext(file)[1].lstrip('.') in list(value) or os.path.splitext(file)[1].lstrip('.').upper() in list(value):
-					moved_path = os.path.join(base_path, key)
+					moved_path = os.path.join(sys.argv[1], key)
 					os.replace(file_path, os.path.join(moved_path, file))
 					print(f'|{file}| replaced in |{key}| folder')
 			if os.path.exists(file_path):
-				moved_path = os.path.join(base_path, 'неизвестные расширения')
+				moved_path = os.path.join(sys.argv[1], 'неизвестные расширения')
 				os.replace(file_path, os.path.join(moved_path, file))
 				print(f'|{file}| replaced in |неизвестные расширения| folder')
 		# Condition to recurse the function for each internal Dirs
 		elif os.path.isdir(file_path) and file not in cust_dirs.keys():
 			print ('recurcive level')
-			recurce(file_path)
+			recurse(file_path)
 			# Condition for Deleting the empty folders
 			if not os.listdir(file_path):
 				os.rmdir(file_path)
@@ -69,7 +68,7 @@ def recurce(path):
 # Function to unpack the archived files
 def unpacking(path):
 	arch_path = os.path.join(path, 'архивы')
-	if os.path.exists(arch_path) and os.listdir(arch_path)::
+	if os.path.exists(arch_path) and os.listdir(arch_path):
 		for file in os.listdir(arch_path): 
 			if os.path.splitext(file)[1].lstrip('.') in cust_dirs['архивы'] or os.path.splitext(file)[1].lstrip('.').upper() in cust_dirs['архивы']:
 				new_path = os.path.join(arch_path, os.path.splitext(file)[0])
@@ -78,10 +77,9 @@ def unpacking(path):
 					shutil.unpack_archive(os.path.join(arch_path, file), new_path)
 					os.remove(os.path.join(arch_path, file))
 
-
 def main():
 	create_custom_dirs(sys.argv[1])
-	recurce(sys.argv[1])
+	recurse(sys.argv[1])
 	unpacking(sys.argv[1])
 
 for arg in sys.argv:
